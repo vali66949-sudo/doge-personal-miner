@@ -1,0 +1,11 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DOGE Personal Miner</title><style>
+body{font-family:system-ui;margin:0;background:#0e131a;color:#fff}main{max-width:720px;margin:auto;padding:16px}.c{background:#19212b;border-radius:18px;padding:18px;margin:12px 0}.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.s{background:#232d39;padding:14px;border-radius:12px}.v{font-size:22px;font-weight:700}button{width:100%;padding:14px;border:0;border-radius:12px;margin-top:9px;font-weight:700}.on{background:#f2b705}.off{background:#465365;color:white}.muted{color:#aab4c1}iframe{width:100%;height:650px;border:0;border-radius:12px;background:white}</style></head><body><main>
+<div class=c><h1>🐕 DOGE Personal Miner</h1><p class=muted>v3 · ingresos reales → presupuesto → minería</p></div>
+<div class=c><div class=g><div class=s>Ingresos<div id=r class=v>$0.00</div></div><div class=s>Créditos<div id=u class=v>0</div></div><div class=s>Disponible<div id=d class=v>$0.00</div></div><div class=s>Potencia<div id=g class=v>0 GH/s</div></div></div><p id=m>⏸️ Detenida</p><button class=on onclick="setm(1)">Activar</button><button class=off onclick="setm(0)">Detener</button></div>
+<div class=c><h2>🎁 Ofertas</h2><div id=w class=muted>Configurando…</div></div>
+<div class=c><h3>🪙 Wallet / pool</h3><div id=wp class=muted>—</div></div>
+<script>
+async function refresh(){let s=await (await fetch('/api/state')).json();r.textContent='$'+(+s.revenue).toFixed(2);u.textContent=(+s.units).toFixed(2);d.textContent='$'+(+s.calc.spendableUsd).toFixed(2);g.textContent=(+s.calc.maxGhsForOneHour).toFixed(3)+' GH/s';m.textContent=s.mining?'🟢 Autorizada':'⏸️ Detenida'}
+async function setm(x){let r=await fetch('/api/mining',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:!!x})});if(!r.ok)alert((await r.json()).error);refresh()}
+(async()=>{let c=await(await fetch('/api/config')).json();if(c.publicKey)w.innerHTML='<iframe src="https://offerwall.gg/wall/'+encodeURIComponent(c.publicKey)+'?userId=personal"></iframe>';else w.textContent='Añade OFFERWALL_PUBLIC_KEY en .env';wp.textContent=(c.wallet||'Wallet no configurada')+' · '+(c.pool||'Pool no configurado');refresh();setInterval(refresh,5000)})()
+</script></main></body></html>
